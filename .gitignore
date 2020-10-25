@@ -1,0 +1,64 @@
+# DLL files
+__pycache__/
+*.pyc
+.vscode/
+
+# Distribution/packaging
+.Python
+app.spec
+Scripts/
+tcl/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+sdist/
+var/
+python-wheels/
+wheels/
+*.egg-info/
+include/
+lib64/
+lib/
+bin/
+.installed.cfg
+*.egg
+share/
+
+# Installer logs
+info.log
+pip-log.txt
+pip-delete-this-directory.txt
+
+# unittest coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+coverage.xml
+
+# Flask docs
+instance/
+.webassets-cache
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+### Python Patch ###
+.venv/
+
+# Virtualenv
+pip-selfcheck.json
+pyvenv.cfg
+lib64
