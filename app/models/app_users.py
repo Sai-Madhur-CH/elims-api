@@ -18,6 +18,8 @@ class AppUsers(db.Model):
     phone = Column(BigInteger, nullable=False)
     hashed_password = Column(String, nullable=False)
     status = Column(String, nullable=False)
+    login_count = Column(Integer, nullable=True)
+    login_attempts = Column(Integer, nullable=True)
     last_login_date = Column(DateTime, nullable=True, default=dt.datetime.now())
     created_at = Column(DateTime, nullable=True, default=dt.datetime.now())
     updated_at = Column(DateTime, nullable=True, default=dt.datetime.now())
@@ -25,6 +27,14 @@ class AppUsers(db.Model):
 
     def save(self):
         db.session.add(self)
+        db.session.commit()
+
+    @staticmethod
+    def update_app_user(row):
+        if row:
+            user = db.session.query(AppUsers).filter_by(user_id = row.get('user_id')).first()
+            for k, v in row.items():
+                setattr(user, k, v)
         db.session.commit()
 
     def get_app_users(self):
@@ -36,6 +46,8 @@ class AppUsers(db.Model):
                                  AppUsers.updated_at,
                                  AppUsers.last_login_date,
                                  AppUsers.status,
+                                 AppUsers.login_count,
+                                 AppUsers.login_attempts,
                                  UserRoles.role_name
                                 ).filter(
                                     UserRoles.role_id == AppUsers.role_id
@@ -54,6 +66,8 @@ class AppUsers(db.Model):
                                 AppUsers.last_login_date,
                                 AppUsers.status,
                                 AppUsers.hashed_password,
+                                AppUsers.login_count,
+                                AppUsers.login_attempts,
                                 UserRoles.role_name
                                 ).filter_by(
                                     **filters
