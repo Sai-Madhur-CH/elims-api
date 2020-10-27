@@ -1,4 +1,4 @@
-from flask import current_app as app, jsonify, make_response
+from flask import current_app as app, jsonify, make_response, request
 from db.connection import db
 from models.app_users import AppUsers
 import jwt
@@ -6,6 +6,7 @@ import bcrypt
 import ast
 import datetime
 from dateutil.relativedelta import relativedelta
+from functools import wraps
 
 key = 'vadajdvcsad vzsfcgawsfdcusat gcvnazsdjhfcgusadvc'
 
@@ -26,7 +27,7 @@ def login(data):
             user['token'] = generate_token(user).decode('utf-8')
             user.pop('hashed_password',None)
             user['login_count'] = int(user['login_count'] or 0) + 1
-            user['login_attempts'] = int(user['login_attempts'] or 0)
+            user['login_attempts'] = 0
             user['last_login_date'] = datetime.datetime.now()
             AppUsers.update_app_user(user)
             return make_response(jsonify(user),200)
@@ -42,7 +43,7 @@ def login(data):
             user['last_login_date'] = datetime.datetime.now()
             AppUsers.update_app_user(user)
             return make_response(jsonify({'status':'inactive'}),200)
-            
+
     else:
         return make_response(jsonify({'status':'unauthorized user'}),200)
 
@@ -85,3 +86,26 @@ def generate_token(user):
         'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=2)
         },key)
     return token
+
+def jwt_required(func):
+    @wraps(func)
+    def login_required(*args, **kwargs):
+
+        jwt_token=request.headers.get('Authorization',None)
+
+        if jwt_token:
+
+            try:
+                decode=jwt.decode(jwt_token,key)
+            except:
+                return {'status':'Invalid Token'}
+
+            result=AppUsers().get_user({'user_id':decode.get('user_id')})
+
+            if result !=None:
+                kwargs['app_user'] = result
+                return func(*args, **kwargs)
+
+        return {'message':'Enter the Authorization token in Headers'}
+
+    return login_required

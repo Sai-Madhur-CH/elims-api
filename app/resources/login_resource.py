@@ -1,4 +1,4 @@
-from flask import current_app as app, jsonify, request
+from flask import current_app as app, jsonify, request, make_response
 from flask_restful import Resource
 from models.app_users import AppUsers
 import services.login_service as ls
@@ -17,11 +17,11 @@ class Login(Resource):
         data = request.get_json()
         if isinstance(data, dict):
             return ls.login(data)
-        return jsonify({'status':self.error_msg}),500
+        return make_response(jsonify({'status':self.error_msg}),200)
            
 
     def put(self):
         data = request.get_json()
         if isinstance(data, dict):
             return ls.register_user(data)
-        return jsonify({'status':self.error_msg}),500
+        return make_response(jsonify({'status':self.error_msg}),500)
