@@ -8,7 +8,7 @@ import datetime as dt
 class UserRoles(db.Model):
 
     __table_args__ = {'schema': 'config'}
-    __table_name__ = 'user_role'
+    __table_name__ = 'user_roles'
 
     role_id = Column(Integer, primary_key=True, autoincrement=True)
     role_name = Column(String, nullable=False)
