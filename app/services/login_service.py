@@ -97,7 +97,7 @@ def jwt_required(func):
 
             try:
                 decode=jwt.decode(jwt_token,key)
-            except:
+            except Exception:
                 return {'status':'Invalid Token'}
 
             result=AppUsers().get_user({'user_id':decode.get('user_id')})

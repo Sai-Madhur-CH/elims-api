@@ -5,3 +5,9 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 HOST = '127.0.0.1'
 PORT = 8001
 DEBUG = True
+# SMTP Config
+SMTP_SERVER = 'mail.eisbiz.net'
+SMTP_PORT = 465
+EMAIL_ID = 'noreply-eclims@eisbiz.net'
+PASSWORD = 'Eisbiz@2020'
+WEB_SITE_LINK = 'http:/localhost:3000/'
