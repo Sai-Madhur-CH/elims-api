@@ -9,6 +9,7 @@ class ForgotPassword(Resource):
 
     def post(self):
         data = request.get_json()
-        if isinstance(data, dict ):
+        if isinstance(data, dict):
+            data.pop('method', None)
             return fp.otp_email_send(data)
         return make_response(jsonify({'status':self.error_msg}),200)
