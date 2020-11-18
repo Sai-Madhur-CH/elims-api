@@ -1,6 +1,7 @@
 # DB Connections
-SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://postgres:postgres@127.0.01:5431/ECLIMS'
-SQLALCHEMY_TRACK_MODIFICATIONS = False
+SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://postgres:postgres@127.0.01:5430/ECLIMS'
+SQLALCHEMY_TRACK_MODIFICATIONS = True
+PROPAGATE_EXCEPTIONS = True
 # Application Config
 HOST = '127.0.0.1'
 PORT = 8001

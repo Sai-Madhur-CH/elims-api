@@ -17,10 +17,13 @@ with app.app_context():
     from resources.login_resource import Login
     from resources.change_password import ChangePassword
     from resources.forgot_password import ForgotPassword
+    from resources.lab_catalog import LabList, LabTestList
 
     api.add_resource(Login, '/login')
     api.add_resource(ChangePassword, '/change_password')
     api.add_resource(ForgotPassword, '/forgot_password')
+    api.add_resource(LabList, '/labs')
+    api.add_resource(LabTestList, '/lab_tests')
 
 
 if __name__ == '__main__':
