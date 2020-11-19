@@ -1,6 +1,7 @@
 from sqlalchemy import Column
 from sqlalchemy import String, Integer, DateTime
 from db.connection import db
+from models.lab_lonic_mapping import LabLonicMapping
 
 class Loinc(db.Model):
 
@@ -56,24 +57,80 @@ class Loinc(db.Model):
     external_copyright_link = Column(String)
 
 
-    def find_all(self, page_no=1, limit=10, filters={}):
+    def find_all(self, page_no=1, limit=10, filters=None):
         lst = list()
-        result = db.session.query(
+        total = int()
+        if isinstance(filters, int):
+            total = db.session.query(
                                 Loinc.loinc_num,
                                 Loinc.component,
                                 Loinc.property,
                                 Loinc.status,
                                 Loinc.shortname,
                                 Loinc.method_typ,
-                                Loinc.scale_typ
-                                ).filter_by(
-                                     **filters
+                                Loinc.scale_typ,
+                                LabLonicMapping.lab_id
+                                ).filter(
+                                    Loinc.loinc_num == LabLonicMapping.loinc_num,
+                                    LabLonicMapping.lab_id == filters
+                                ).count()
+
+            result = db.session.query(
+                                Loinc.loinc_num,
+                                Loinc.component,
+                                Loinc.property,
+                                Loinc.status,
+                                Loinc.shortname,
+                                Loinc.method_typ,
+                                Loinc.scale_typ,
+                                LabLonicMapping.lab_id
+                                ).filter(
+                                    Loinc.loinc_num == LabLonicMapping.loinc_num,
+                                    LabLonicMapping.lab_id == filters
                                 ).paginate(
                                          page=int(page_no), 
                                          error_out=False, 
                                          max_per_page=int(limit)
                                 )
-        for row in [row._asdict() for row in result.items]:
-            row.pop('_sa_instance_state', None)
-            lst.append(row)
-        return lst, Loinc.query.count()
+            for row in [row._asdict() for row in result.items]:
+                row.pop('_sa_instance_state', None)
+                lst.append(row)
+        else:
+            total = db.session.query(
+                                Loinc.loinc_num,
+                                Loinc.component,
+                                Loinc.property,
+                                Loinc.status,
+                                Loinc.shortname,
+                                Loinc.method_typ,
+                                Loinc.scale_typ,
+                                LabLonicMapping.lab_id
+                                ).filter(
+                                    Loinc.loinc_num == LabLonicMapping.loinc_num
+                                ).filter_by(
+                                    **filters
+                                ).count()
+
+            result = db.session.query(
+                                Loinc.loinc_num,
+                                Loinc.component,
+                                Loinc.property,
+                                Loinc.status,
+                                Loinc.shortname,
+                                Loinc.method_typ,
+                                Loinc.scale_typ,
+                                LabLonicMapping.lab_id
+                                ).filter(
+                                    Loinc.loinc_num == LabLonicMapping.loinc_num
+                                ).filter_by(
+                                    **filters
+                                ).paginate(
+                                         page=int(page_no), 
+                                         error_out=False, 
+                                         max_per_page=int(limit)
+                                )
+            for row in [row._asdict() for row in result.items]:
+                row.pop('_sa_instance_state', None)
+                lst.append(row)
+
+        return lst, total
