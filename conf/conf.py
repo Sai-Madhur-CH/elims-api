@@ -9,6 +9,6 @@ DEBUG = True
 # SMTP Config
 SMTP_SERVER = 'mail.eisbiz.net'
 SMTP_PORT = 465
-EMAIL_ID = 'noreply-eclims@eisbiz.net'
+EMAIL_ID = 'noreply@eisbiz.com'
 PASSWORD = 'Eisbiz@2020'
 WEB_SITE_LINK = 'http:/localhost:3000/'
