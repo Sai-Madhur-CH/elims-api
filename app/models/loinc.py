@@ -60,7 +60,6 @@ class Loinc(db.Model):
     def find_all(self, page_no=1, limit=10, filters=None):
         lst = list()
         total = int()
-        print('*******', filters)
         if isinstance(filters, int):
             total = db.session.query(
                                 Loinc.loinc_num,
@@ -92,7 +91,8 @@ class Loinc(db.Model):
                 lst.append(row)
 
         elif filters == None:
-            total = db.session.query(Loinc).count()
+            lonic_numbers = ('1000-9' ,'10000-8' ,'10001-6' ,'10002-4' ,'10003-2' ,'10004-0' ,'10005-7' ,'10006-5' ,'10007-3' ,'10008-1' ,'1001-7' ,'10010-7' ,'10011-5' ,'10012-3' ,'10013-1' ,'10014-9' ,'10015-6' ,'10016-4' ,'10017-2' ,'10018-0' ,'10019-8' ,'1002-5' ,'10020-6' ,'10021-4' ,'10022-2' ,'10023-0' ,'10024-8' ,'10025-5' ,'10026-3' ,'10027-1' ,'10028-9' ,'10029-7' ,'1003-3' ,'10030-5' ,'10031-3' ,'10032-1' ,'10033-9' ,'10034-7' ,'10035-4' ,'10036-2' ,'10037-0' ,'10038-8' ,'10039-6' ,'1004-1' ,'10041-2' ,'10042-0' ,'10043-8' ,'10044-6' ,'10045-3' ,'10046-1' ,'10047-9' ,'10048-7' ,'10049-5' ,'10276-4')
+            total = db.session.query(Loinc).filter(Loinc.loinc_num.in_(lonic_numbers)).count()
             result = db.session.query(
                                 Loinc.loinc_num,
                                 Loinc.component,
@@ -101,7 +101,7 @@ class Loinc(db.Model):
                                 Loinc.shortname,
                                 Loinc.method_typ,
                                 Loinc.scale_typ
-                                ).paginate(
+                                ).filter(Loinc.loinc_num.in_(lonic_numbers)).paginate(
                                          page=int(page_no), 
                                          error_out=False, 
                                          max_per_page=int(limit)
@@ -145,7 +145,6 @@ class Loinc(db.Model):
                                 ).filter_by(
                                     **filters
                                 ).count()
-
             result = db.session.query(
                                 Loinc.loinc_num,
                                 Loinc.component,
