@@ -60,15 +60,10 @@ class Loinc(db.Model):
     def find_all(self, page_no=1, limit=10, filters=None):
         lst = list()
         total = int()
+        print('*******', filters)
         if isinstance(filters, int):
             total = db.session.query(
                                 Loinc.loinc_num,
-                                Loinc.component,
-                                Loinc.property,
-                                Loinc.status,
-                                Loinc.shortname,
-                                Loinc.method_typ,
-                                Loinc.scale_typ,
                                 LabLonicMapping.lab_id
                                 ).filter(
                                     Loinc.loinc_num == LabLonicMapping.loinc_num,
@@ -95,15 +90,55 @@ class Loinc(db.Model):
             for row in [row._asdict() for row in result.items]:
                 row.pop('_sa_instance_state', None)
                 lst.append(row)
-        else:
-            total = db.session.query(
+
+        elif filters == None:
+            total = db.session.query(Loinc).count()
+            result = db.session.query(
                                 Loinc.loinc_num,
                                 Loinc.component,
                                 Loinc.property,
                                 Loinc.status,
                                 Loinc.shortname,
                                 Loinc.method_typ,
-                                Loinc.scale_typ,
+                                Loinc.scale_typ
+                                ).paginate(
+                                         page=int(page_no), 
+                                         error_out=False, 
+                                         max_per_page=int(limit)
+                                )
+            for row in [row._asdict() for row in result.items]:
+                row.pop('_sa_instance_state', None)
+                lst.append(row)
+        
+        elif isinstance(filters, dict):
+            total = db.session.query(
+                                Loinc.loinc_num
+                                ).filter(
+                                    Loinc.component.ilike('%'+  filters.get('component')  +'%')
+                                ).count()
+
+            result = db.session.query(
+                                Loinc.loinc_num,
+                                Loinc.component,
+                                Loinc.property,
+                                Loinc.status,
+                                Loinc.shortname,
+                                Loinc.method_typ,
+                                Loinc.scale_typ
+                                ).filter(
+                                    Loinc.component.ilike('%'+  filters.get('component')  +'%')
+                                ).paginate(
+                                         page=int(page_no), 
+                                         error_out=False, 
+                                         max_per_page=int(limit)
+                                )
+            for row in [row._asdict() for row in result.items]:
+                row.pop('_sa_instance_state', None)
+                lst.append(row)
+
+        else:
+            total = db.session.query(
+                                Loinc.loinc_num,
                                 LabLonicMapping.lab_id
                                 ).filter(
                                     Loinc.loinc_num == LabLonicMapping.loinc_num
